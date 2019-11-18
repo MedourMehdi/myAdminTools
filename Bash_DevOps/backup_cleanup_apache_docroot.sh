@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 #
-# Backup and Cleaning rotation Apache script
+# Backup (Once a month) and Cleaning (2 months retention) rotation Apache script
 # 2019 mmedour_at_gmail_com
 #
 
@@ -40,7 +40,13 @@ www_var(){
 
 www_ls(){
   for dir2list in $(ls -d ${WWW_dir}/*/ 2> /dev/null);do
-    ListDir="${ListDir} $(basename ${dir2list})"
+    #
+    # Quick check if we're not in presence of backup dir
+    # I think we can do better - But it'll do the job...
+    #
+    if ( $(echo $(basename $dir2list) | grep -c "$(basename ${dir2list})_[0-2][0-9][0-9][0-9][0-1][0-2]") -lt 1);then
+      ListDir="${ListDir} $(basename ${dir2list})"
+    fi
   done
 }
 
