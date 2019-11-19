@@ -44,14 +44,15 @@ www_ls(){
     # Quick check if we're not in presence of backup dir
     # I think we can do better - But it'll do the job...
     #
-    if ( $(echo $(basename $dir2list) | grep -c "$(basename ${dir2list})_[0-2][0-9][0-9][0-9][0-1][0-2]") -lt 1);then
+  is_backup=$(echo $dir2list | grep -c "$(basename ${dir2list})_[0-2][0-9][0-9][0-9][0-1][0-2]");
+    if [ ${is_backup} -lt 1 ];then
       ListDir="${ListDir} $(basename ${dir2list})"
     fi
   done
 }
 
 www_conf(){
-  for dir2list in $(grep -h "DocumentRoot" /etc/apache2/sites-enabled/*conf | grep -v "#" | awk -F" " '{print $2}' | sort -u);do
+  for dir2list in $(grep -h "DocumentRoot" /etc/apache2/sites-enabled/*conf | grep -v "#" | awk -F" " '{print $2}' | sed -e "s#${WWW_dir}/##g" | awk -F"/" '{print $1}' | sort -u | grep -v "^$");do
     ListDir="${ListDir} $(basename ${dir2list})"
   done
 }
@@ -63,17 +64,17 @@ www_conf(){
 backup(){
   for dir in ${ListDir};do
     NewDir="${WWW_dir}/${dir}_${ToDay}"
-    if ( ! -d ${NewDir} -a -d ${dir} ); then
+    if [ ! -d "${NewDir}" ] && [ -d "${dir}" ]; then
       Message="New Backup for this month=> ${NewDir}*"
       echo "${Message}"
       echo "Source directory => ${dir}";
-      [[ DebugMode == 0 ]] && sudo cp -a ${dir} ${NewDir};
+      [[ DebugMode == 0 ]] && sudo cp -a ${WWW_dir}/${dir} ${WWW_dir}/${NewDir};
     fi
   done
 }
 
 #
-# We don't want to remove docroot served by Apache
+# We don't want to remove docroots served by Apache
 #
 
 cleanup(){
@@ -81,9 +82,9 @@ cleanup(){
     OldDir="${WWW_dir}/${dir}_${OldDate}"
     Message="We should remove this template ${OldDir}*"
     echo "${Message}"
-    for dir2rm in $(ls -d ${OldDir}* 2> /dev/null | grep -v "${dir}$");do
-      if [ -d "${dir2rm}" ]; then
-      echo "Dir ${dir2rm}";
+    for dir2rm in $(ls -d ${WWW_dir}/*/ 2> /dev/null | grep "${dir}" | grep -v "${dir}/$");do
+      if [ -d "${dir2rm}" ];then
+      echo "Dir2rm ${dir2rm} / Dir ${dir}";
       [[ DebugMode == 0 ]] && sudo rm -rf ${dir2rm};
       fi
     done
