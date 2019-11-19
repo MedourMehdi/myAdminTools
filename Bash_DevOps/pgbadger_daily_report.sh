@@ -14,9 +14,6 @@
 #   log_filename = 'postgresql-%a.log'
 #
 
-MAIL_FROM="dba_reporting@${HOST}"
-MAIL_TO="devops@yourdomain.tld"
-
 PGLOG_DIR="/var/log/postgresql"
 PG_LOGFILE="postgresql-$(LANG=en_GB date --date yesterday +%a).log"
 PGBADGER_FILENAME="pgbadger_$(LANG=en_GB date --date yesterday +%a).html"
@@ -45,6 +42,8 @@ compress_report(){
 }
 
 email_notify(){
+    MAIL_FROM="dba_reporting@${HOST}"
+    MAIL_TO="devops@yourdomain.tld"
     SUBJECT="${ENV} - POSTGRESQL LOG - $(date --date yesterday +%a)"
     MESSAGE="PGBadger from ${HOST} - Log parsed = ${PGLOG_DIR}/${PG_LOGFILE}"
     [ -f "${PGBADGER_FILENAME}.gz" ] && echo "${MESSAGE}" | mutt -e "set from=${MAIL_FROM}" -s "${SUBJECT}" -a ${PGBADGER_FILENAME}.gz -- ${MAIL_TO}
