@@ -1,5 +1,12 @@
 #!/bin/bash
 
+#
+#   Remove HDFS directories older than 60 days
+#   copyright (c) 2019 Medour Mehdi
+#   
+#   https://github.com/MedourMehdi
+#
+
 # We want to recursively remove the 60 days older directories from Hadoop Cluster
 now=$(date +%s)
 # Path in HDFS where we're going to delete old folder
@@ -9,7 +16,7 @@ my_pattern="comp_"
 
 #
 # Email stuff.
-# Note that we send an html email wuth green color for success and red if not.
+# Note that we send an html email with green color for success and red if not.
 #
 HOST=$(hostame -f)
 SUBJECT="HDFS CLEANING RESULT $(date)"
