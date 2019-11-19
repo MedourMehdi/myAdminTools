@@ -1,8 +1,12 @@
 #!/bin/bash -x
 
 #
-# Backup (Once a month) and Cleaning (2 months retention) rotation Apache script
-# 2019 mmedour_at_gmail_com
+#   My own utility to backup and clean DocRoot (Apache only)
+#   copyright (c) 2019 Medour Mehdi
+#   
+#   Backup (Once a month) and Cleaning (2 months retention) rotation Apache script
+#   
+#   https://github.com/MedourMehdi
 #
 
 #
@@ -50,7 +54,7 @@ www_ls(){
   for dir2list in $(ls -d ${WWW_dir}/*/ 2> /dev/null);do
     #
     # Quick check if we're not in presence of backup dir
-    # I think we can do better - But it'll do the job...
+    # I think we can do better - It should do the trick...
     #
   is_backup=$(echo $dir2list | grep -c "$(basename ${dir2list})_[0-2][0-9][0-9][0-9][0-1][0-2]");
     if [ ${is_backup} -lt 1 ];then
