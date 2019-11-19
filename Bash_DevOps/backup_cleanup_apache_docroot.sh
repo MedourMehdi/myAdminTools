@@ -34,6 +34,14 @@ DebugMode=1
 # Functions declaration
 #
 
+gzip_check(){
+  type -a gzip > /dev/null 2>&1;
+  if[ ?$ > 0 ];then
+    echo "gzip must be installed"
+    exit 1;
+  fi
+}
+
 www_var(){
   ListDir="docroot1 docroot2 docroot3"
 }
@@ -62,6 +70,7 @@ www_conf(){
 #
 
 backup(){
+  gzip_check;
   for dir in ${ListDir};do
     NewDir="${WWW_dir}/${dir}_${ToDay}"
     if [ ! -d "${NewDir}" ] && [ -d "${dir}" ]; then
@@ -69,6 +78,9 @@ backup(){
       echo "${Message}"
       echo "Source directory => ${dir}";
       [[ DebugMode == 0 ]] && sudo cp -a ${WWW_dir}/${dir} ${WWW_dir}/${NewDir};
+      if [ -d "${WWW_dir}/${NewDir}" ];then
+        tar czvf ${WWW_dir}/${NewDir}.tar.gz ${WWW_dir}/${NewDir} && rm ${WWW_dir}/${NewDir}
+      fi
     fi
   done
 }
@@ -87,6 +99,10 @@ cleanup(){
       echo "Dir2rm ${dir2rm} / Dir ${dir}";
       [[ DebugMode == 0 ]] && sudo rm -rf ${dir2rm};
       fi
+      if [ -f "${dir2rm}.tar.gz" ];then
+      echo "Removing ${dir2rm}.tar.gz";
+      [[ DebugMode == 0 ]] && sudo rm -rf ${dir2rm}.tar.gz;
+      fi      
     done
   done
 }
