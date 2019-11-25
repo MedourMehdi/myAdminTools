@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-#   Grep all kinks in html page.
+#   Grep all links in html page.
 #   Use Regex to adapt a pattern if you need.
 #   copyright (c) 2019 Medour Mehdi
 #   
