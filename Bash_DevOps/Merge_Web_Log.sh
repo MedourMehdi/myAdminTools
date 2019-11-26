@@ -1,6 +1,13 @@
 #!/bin/bash -x
 
 #
+#   Merging and backup apache log from multiple web server
+#   copyright (c) 2019 Medour Mehdi
+#   
+#   https://github.com/MedourMehdi
+#
+
+#
 #   Variables init
 #
 SITENAME=$1
