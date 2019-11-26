@@ -76,18 +76,16 @@ echo "${LASTDATE_2}"
 #
 `tail -n 1 ${DEST_DIR}/access-${SITENAME}.log > endfile.temp`;
 date=`awk -F " " '{print $4}' endfile.temp | tr "[" " "`;
-
 echo $date > datefile.temp;
-
 day=`awk -F "/" '{print $1}' datefile.temp`;
 month=`awk -F "/" '{print $2}' datefile.temp`;
 `awk -F "/" '{print $3}' datefile.temp > year.temp`;
 year=`awk -F ":" '{print $1}' year.temp`;
-
 DATEDEBUT=`date -d "${day} ${month} ${year}" +"%Y%m%d"`;
 
-echo "DATEDEBUT equal ${DATEDEBUT}"
-
+#
+#   Keep it for next merge
+#
 cp datefile.temp  ${DEST_DIR}/access-${SITENAME}.last.log
 
 `head -1 ${DEST_DIR}/access-${SITENAME}.log > startfile.temp`;
@@ -98,23 +96,22 @@ month=`awk -F "/" '{print $2}' datefile.temp`;
 year=`awk -F ":" '{print $1}' year.temp`;
 DATEFIN=`date -d "${day} ${month} ${year}" +"%Y%m%d"`
 
-echo "DATEFIN equal ${DATEFIN}"
-
+#
+#   Cleaning tmp files
+#
 rm year.temp;rm datefile.temp;rm startfile.temp;rm endfile.temp;
 
-`mv ${DEST_DIR}/access-${SITENAME}.log ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log`
+mv ${DEST_DIR}/access-${SITENAME}.log ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log
 
 #
 #   Archiving
 #
-`gzip --force ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log`
+gzip --force ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log
 
 #
 #   Store in safe place
 #
-`cp -a ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz ${NFS_BACKUP_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz`
-
-echo "Fin ${SITENAME}"
+cp -a ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz ${NFS_BACKUP_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz
 
 #
 # FTP Upload example
