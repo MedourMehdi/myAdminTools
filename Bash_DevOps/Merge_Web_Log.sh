@@ -81,7 +81,7 @@ day=`awk -F "/" '{print $1}' datefile.temp`;
 month=`awk -F "/" '{print $2}' datefile.temp`;
 `awk -F "/" '{print $3}' datefile.temp > year.temp`;
 year=`awk -F ":" '{print $1}' year.temp`;
-DATEDEBUT=`date -d "${day} ${month} ${year}" +"%Y%m%d"`;
+DATE2=`date -d "${day} ${month} ${year}" +"%Y%m%d"`;
 
 #
 #   Keep it for next merge
@@ -94,24 +94,24 @@ day=`awk -F "/" '{print $1}' datefile.temp`;
 month=`awk -F "/" '{print $2}' datefile.temp`;
 `awk -F "/" '{print $3}' datefile.temp > year.temp`;
 year=`awk -F ":" '{print $1}' year.temp`;
-DATEFIN=`date -d "${day} ${month} ${year}" +"%Y%m%d"`
+DATE1=`date -d "${day} ${month} ${year}" +"%Y%m%d"`
 
 #
 #   Cleaning tmp files
 #
 rm year.temp;rm datefile.temp;rm startfile.temp;rm endfile.temp;
 
-mv ${DEST_DIR}/access-${SITENAME}.log ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log
+mv ${DEST_DIR}/access-${SITENAME}.log ${DEST_DIR}/access-${SITENAME}.${DATE1}-${DATE2}.log
 
 #
 #   Archiving
 #
-gzip --force ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log
+gzip --force ${DEST_DIR}/access-${SITENAME}.${DATE1}-${DATE2}.log
 
 #
 #   Store in safe place
 #
-cp -a ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz ${NFS_BACKUP_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz
+cp -a ${DEST_DIR}/access-${SITENAME}.${DATE1}-${DATE2}.log.gz ${NFS_BACKUP_DIR}/access-${SITENAME}.${DATE1}-${DATE2}.log.gz
 
 #
 # FTP Upload example
@@ -121,12 +121,12 @@ PASSWD="my_pass"
 HOST="ftp.wedoseo4you.com"
 
 if [ ${FTP_Upload_Active} -gt 0 ];then
-        FTPSTATUS=`curl  -s -w '%{http_code}' -u ${USER}:${PASSWD} -T ${DEST_DIR}/access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz ftp://${HOST}/`
+        FTPSTATUS=`curl  -s -w '%{http_code}' -u ${USER}:${PASSWD} -T ${DEST_DIR}/access-${SITENAME}.${DATE1}-${DATE2}.log.gz ftp://${HOST}/`
         if [ "${FTPSTATUS}" = "226"  ]; then
                 DATE_SEND=`date +"%Y%m%d%H"`
-                echo "${DATE_SEND} access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz done. FTP Status ${FTPSTATUS}" >> /tmp/log_FTP_Upload_OK_ftp.log
+                echo "${DATE_SEND} access-${SITENAME}.${DATE1}-${DATE2}.log.gz done. FTP Status ${FTPSTATUS}" >> /tmp/log_FTP_Upload_OK_ftp.log
         else
-                echo "${DATE_SEND} access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz error. FTP Status ${FTPSTATUS}" >> /tmp/log_FTP_Upload_ftp.log
-                echo "${DATE_SEND} access-${SITENAME}.${DATEFIN}-${DATEDEBUT}.log.gz error. FTP Status ${FTPSTATUS}" | tee /dev/tty | mail -s 'FTP_Upload Error' ${MAIL_ADMIN}
+                echo "${DATE_SEND} access-${SITENAME}.${DATE1}-${DATE2}.log.gz error. FTP Status ${FTPSTATUS}" >> /tmp/log_FTP_Upload_ftp.log
+                echo "${DATE_SEND} access-${SITENAME}.${DATE1}-${DATE2}.log.gz error. FTP Status ${FTPSTATUS}" | tee /dev/tty | mail -s 'FTP_Upload Error' ${MAIL_ADMIN}
         fi
 fi
