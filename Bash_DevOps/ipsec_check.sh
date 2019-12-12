@@ -7,9 +7,9 @@
 #   https://github.com/MedourMehdi
 #
 
-my_remote_ip="10.10.4.201"
+my_remote_ip="10.10.4.254"
 my_date=`date +"%Y%m%d%H"`
-my_email="linux_team@companeo.com"
+my_email="network_admin@mydomain.com"
 
 func_restart_ipsec(){
     my_result_ipsec=$(systemctl restart ipsec);
