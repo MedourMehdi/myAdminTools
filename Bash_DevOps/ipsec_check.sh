@@ -13,8 +13,8 @@ my_email="linux_team@companeo.com"
 
 func_restart_ipsec(){
     my_result_ipsec=$(systemctl restart ipsec);
-    [ "$?" != "0" ] && my_message="Error restarting ipsec.\n${result_ipsec}" || my_message="ipsec was restarted at ${date}";
-    echo -e "${my_message}" | mail -s "Ipsec Restart ${date}" ${my_email};
+    [ "$?" != "0" ] && my_message="Error restarting ipsec.\n${result_ipsec}" || my_message="ipsec was restarted at ${my_date}";
+    echo -e "${my_message}" | mail -s "Ipsec Restart ${my_date}" ${my_email};
 }
 
 main(){
